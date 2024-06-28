@@ -1,3 +1,3 @@
 // test
 
-console.log("Hello, World")
+console.log("this is the start of a journey")
