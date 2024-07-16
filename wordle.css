@@ -1,11 +1,17 @@
-#userGuessForm /** try getting the form itself to center align **/
+#userGuessForm /** pls try getting the form itself to center align **/
 {
     text-align: center; 
-    background-color: rgb(110, 184, 192);
+    background-color: rgb(218, 197, 237);
     width:50%;
     border-radius: 10px;
     border: 1px solid black;
     box-shadow: inset 0 0 10px rgb(16, 73, 20); 
+    
+}
+
+body
+{
+    background-color: rgb(224, 191, 251);
 }
 
 #gameTitle
