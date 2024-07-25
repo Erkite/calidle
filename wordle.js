@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('california_cities1.csv')
+    fetch('california_cities.csv')
         .then(response => {
             console.log("Fetch response:", response);
             return response.text();
