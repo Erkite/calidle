@@ -18,6 +18,13 @@
         <button type="submit">Submit</button>
     </form>
 </div>
+<form id="userGuessForm">
+    <input type="text" id="userGuess" list="citySuggestions" autocomplete="off">
+    <datalist id="citySuggestions"></datalist>
+    <button type="submit">Submit</button>
+</form>
+<div id="csvData"></div>
+
 
 <!-- Include PapaParse library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>

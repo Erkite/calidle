@@ -1,11 +1,10 @@
+let database = [];
+let answer = '';
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('california_cities.csv')
-        .then(response => {
-            console.log("Fetch response:", response);
-            return response.text();
-        })
+        .then(response => response.text())
         .then(csvData => {
-            console.log("CSV data received:", csvData);
             parseCsvData(csvData);
         })
         .catch(error => {
@@ -17,15 +16,12 @@ function parseCsvData(csvData) {
     Papa.parse(csvData, {
         header: true,
         skipEmptyLines: true,
-        transform: function(value) {
-            return value.trim();
-        },
+        transform: value => value.trim(),
         complete: function(results) {
-            console.log("Papa Parse results:", results);
             const dataArray = results.data;
-            console.log("Parsed data array:", dataArray);
             displayCsvData(dataArray);
             updateDatabase(dataArray);
+            setupAutoFill();
         }
     });
 }
@@ -36,7 +32,6 @@ function displayCsvData(dataArray) {
     table.border = '1';
 
     if (dataArray.length > 0) {
-        // Create table header
         const headerRow = document.createElement('tr');
         Object.keys(dataArray[0]).forEach(header => {
             const headerCell = document.createElement('th');
@@ -45,7 +40,6 @@ function displayCsvData(dataArray) {
         });
         table.appendChild(headerRow);
 
-        // Create table rows
         dataArray.forEach(rowData => {
             const row = document.createElement('tr');
             Object.values(rowData).forEach(cellData => {
@@ -61,44 +55,44 @@ function displayCsvData(dataArray) {
 }
 
 function updateDatabase(dataArray) {
-    console.log("Data received in updateDatabase:", dataArray);
-    
-    if (!Array.isArray(dataArray) || dataArray.length === 0) {
-        console.error("Invalid data array received");
-        return;
-    }
-    
-    const firstRow = dataArray[0];
-    console.log("First row of data:", firstRow);
-    
-    const cityNameKey = Object.keys(firstRow).find(key => key.toLowerCase() === "city");
-    
+    const cityNameKey = Object.keys(dataArray[0]).find(key => key.toLowerCase() === "city");
     if (!cityNameKey) {
-        console.error("No 'CityName' column found in CSV data");
+        console.error("No 'City' column found in CSV data");
         return;
     }
-    
-    database = dataArray.map(row => {
-        const cityName = row[cityNameKey];
-        if (!cityName) {
-            console.warn("Row with missing city name:", row);
-            return null;
-        }
-        return cityName.toLowerCase();
-    }).filter(Boolean);
-    
+
+    database = dataArray.map(row => row[cityNameKey].toLowerCase()).filter(Boolean);
     if (database.length === 0) {
         console.error("No valid city names found in the data");
         return;
     }
-    
+
     answer = database[Math.floor(Math.random() * database.length)];
     console.log("New answer:", answer);
 }
 
+function setupAutoFill() {
+    const userGuessInput = document.getElementById('userGuess');
+    const citySuggestions = document.getElementById('citySuggestions');
+
+    userGuessInput.addEventListener('input', function() {
+        const inputValue = userGuessInput.value.trim().toLowerCase();
+        citySuggestions.innerHTML = '';
+
+        if (inputValue.length > 0) {
+            const filteredCities = database.filter(city => city.startsWith(inputValue));
+            filteredCities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                citySuggestions.appendChild(option);
+            });
+        }
+    });
+}
+
 document.getElementById("userGuessForm").addEventListener("submit", function(event) {
     event.preventDefault();
-    var guess = document.getElementById("userGuess").value.trim().toLowerCase();
+    const guess = document.getElementById("userGuess").value.trim().toLowerCase();
 
     if (guess === answer) {
         alert("YAY");
