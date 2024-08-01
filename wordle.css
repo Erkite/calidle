@@ -5,22 +5,15 @@
     width:50%;
     border-radius: 10px;
     border: 1px solid black;
-    box-shadow: inset 0 0 10px rgb(16, 73, 20);
-    display: inline-block;
+    box-shadow: inset 0 0 10px rgb(16, 73, 20); 
     
 }
 
-.userGuessDiv
+body
 {
-    text-align: center;
+    background-color: rgb(224, 191, 251);
 }
-html { 
-    background: url(https://lp-cms-production.imgix.net/2023-04/shutterstock_370318550.jpg?w=1920&auto=format&q=75) no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-  }
+
 #gameTitle
 {
     text-align: center;
