@@ -1,3 +1,22 @@
+
+/** centering the game title div **/
+
+
+#title {
+
+    text-align: center;
+}
+
+#titleImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    scale: 30%;
+}
+
+
+
 #userGuessForm /** pls try getting the form itself to center align **/
 {
     text-align: center; 
@@ -5,8 +24,7 @@
     width:50%;
     border-radius: 10px;
     border: 1px solid black;
-    box-shadow: inset 0 0 10px rgb(16, 73, 20); 
-    
+    box-shadow: inset 0 0 10px rgb(16, 73, 20);     
 }
 
 body
@@ -14,7 +32,3 @@ body
     background-color: rgb(224, 191, 251);
 }
 
-#gameTitle
-{
-    text-align: center;
-}
