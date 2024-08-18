@@ -1,34 +1,33 @@
+body {
+    background-color: black;
+}
 
-/** centering the game title div **/
-
-
-#title {
-
+.welcome {
     text-align: center;
+    font-size: xx-large;
 }
 
-#titleImage {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-    scale: 30%;
+#header {
+    color: goldenrod;
+    font-family: Verdana
 }
 
-
-
-#userGuessForm /** pls try getting the form itself to center align **/
-{
-    text-align: center; 
-    background-color: rgb(218, 197, 237);
-    width:50%;
-    border-radius: 10px;
-    border: 1px solid black;
-    box-shadow: inset 0 0 10px rgb(16, 73, 20);     
+#underText {
+    color: white;
+    font-family: cursive;
 }
 
-body
-{
-    background-color: rgb(224, 191, 251);
+.about {
+    background-color: rgba(255, 255, 255, 0.103);
+    padding: 3%
 }
 
+#aboutText {
+    color: white;
+    text-align: center;
+    max-width: 600px;
+    margin: 0% auto 30% auto;
+    font-size: x-large;
+    background-color: rgba(20, 20, 20, 0.801);
+    padding: 3%;
+}
