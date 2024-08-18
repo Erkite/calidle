@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Wordle Project</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="wordle.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle-like Game</title>
+    <link rel="stylesheet" href="wordle.css">
 </head>
 <body>
+    <div class="container">
+        <div class="title">Wordle Game!</div>
+        <form id="userGuessForm">
+            <input list="cityNames" id="userGuess" name="userGuess" placeholder="Enter city name" required>
+            <datalist id="cityNames"></datalist>
+            <button type="submit">Submit Guess</button>
+        </form>
 
-<div>
- <h1 id="gameTitle">Wordle Project</h1>
-</div>
-<div class="userGuessDiv">
-    <form action="" method="get" id="userGuessForm">
-        <label for="userGuess">Enter your guess: </label>
-        <input type="text" name="userGuess" id="userGuess" list="cityNames" autocomplete="off" required />
-        <button type="submit">Submit</button>
-    </form>
-</div>
+        <div id="previousGuessesContainer">
+            <h2>Previous Guesses</h2>
+            <ul id="previousGuessesList"></ul>
+        </div>
+    </div>
 
-<!-- Add the datalist element -->
-<datalist id="cityNames"></datalist>
-
-<!-- Add the csvData container -->
-<div id="csvData" style="visibility: hidden;"></div>
-
-<!-- Include PapaParse library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-<script src="wordle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="wordle.js"></script>
 </body>
 </html>
