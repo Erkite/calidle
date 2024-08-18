@@ -1,18 +1,11 @@
-#userGuessForm /** pls try getting the form itself to center align **/
-{
-    text-align: center; 
-    background-color: rgb(218, 197, 237);
-    width:50%;
-    border-radius: 10px;
-    border: 1px solid black;
-    box-shadow: inset 0 0 10px rgb(16, 73, 20);
-    display: inline-block;
-    
-}
-
-.userGuessDiv
-{
-    text-align: center;
+/* Style for the body to use flexbox */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 html { 
     background: url(https://lp-cms-production.imgix.net/2023-04/shutterstock_370318550.jpg?w=1920&auto=format&q=75) no-repeat center center fixed; 
@@ -20,8 +13,58 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-  }
-#gameTitle
-{
+}
+/* Container to wrap the title, form, and previous guesses section */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Style for the title */
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+/* Style for the form */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+form input, form button {
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+/* Style for the previous guesses container */
+#previousGuessesContainer {
     text-align: center;
+    width: 100%;
+}
+
+#previousGuessesList {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+}
+
+#previousGuessesList li {
+    background-color: #f9f9f9;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
