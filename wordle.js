@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 let answer;  // Declare the answer variable here
-let database = [];  // Declare the database globally
+let database = {};  // Declare the database as an object
 let guessCount = 0;  // Initialize the guess counter
 
 function parseCsvData(csvData) {
@@ -74,26 +74,22 @@ function updateDatabase(dataArray) {
         return;
     }
     
-    const firstRow = dataArray[0];
-    console.log("First row of data:", firstRow);
-    
-    const cityNameKey = Object.keys(firstRow).find(key => key.toLowerCase() === "city");
+    const cityNameKey = Object.keys(dataArray[0]).find(key => key.toLowerCase() === "city");
     
     if (!cityNameKey) {
         console.error("No 'CityName' column found in CSV data");
         return;
     }
     
-    database = dataArray.map(row => {
+    database = dataArray.reduce((acc, row) => {
         const cityName = row[cityNameKey];
-        if (!cityName) {
-            console.warn("Row with missing city name:", row);
-            return null;
+        if (cityName) {
+            acc[cityName.toLowerCase()] = row;
         }
-        return cityName.toLowerCase();
-    }).filter(Boolean);
+        return acc;
+    }, {});
 
-    if (database.length === 0) {
+    if (Object.keys(database).length === 0) {
         console.error("No valid city names found in the data");
         return;
     }
@@ -101,15 +97,20 @@ function updateDatabase(dataArray) {
     // Initial population of the datalist
     updateDatalist('');
     
-    answer = database[Math.floor(Math.random() * database.length)];
+    answer = getRandomCity();
     console.log("New answer:", answer);
+}
+
+function getRandomCity() {
+    const cityNames = Object.keys(database);
+    return cityNames[Math.floor(Math.random() * cityNames.length)];
 }
 
 function updateDatalist(filter) {
     const datalist = document.getElementById('cityNames');
     datalist.innerHTML = '';  // Clear existing options
 
-    const filteredCities = database.filter(city => city.startsWith(filter));
+    const filteredCities = Object.keys(database).filter(city => city.startsWith(filter));
     filteredCities.forEach(city => {
         const option = document.createElement('option');
         option.value = city;
@@ -130,7 +131,7 @@ document.getElementById("userGuessForm").addEventListener("submit", function(eve
     if (guess === answer) {
         alert(`YAY! You guessed it in ${guessCount} tries.`);
         guessCount = 0;  // Reset the counter for a new game
-        answer = database[Math.floor(Math.random() * database.length)];  // Pick a new answer
+        answer = getRandomCity();  // Pick a new answer
     } else {
         alert("Try again!");
     }
