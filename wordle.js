@@ -96,12 +96,17 @@ document.getElementById("userGuess").addEventListener("input", function(event) {
 document.getElementById("userGuessForm").addEventListener("submit", function(event) {
     event.preventDefault();
     const guess = document.getElementById("userGuess").value.trim().toLowerCase();
-    guessCount++;  // Increment the guess counter
 
-    if (database[guess]) {
+    if (database[guess]) { // when the guess is within the database of cities (i.e. allowed guess)
+        guessCount++;
         const guessData = database[guess];
         previousGuesses.push(guessData);
         displayPreviousGuesses();
+    }
+
+    else {
+        alert("Not a California City! Try again")
+        document.getElementById("userGuess").value = '';
     }
 
     if (guess === answer) {
@@ -110,8 +115,10 @@ document.getElementById("userGuessForm").addEventListener("submit", function(eve
         answer = getRandomCity();  // Pick a new answer
         previousGuesses = [];  // Reset previous guesses
         displayPreviousGuesses();  // Clear the display
-    } else {
+    } else if (guess != answer && database[guess]) { // when guess is allowed guess but is not the correct guess
         alert("Try again!");
+        document.getElementById("userGuess").value = '';
+
     }
 });
 
