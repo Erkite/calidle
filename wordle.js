@@ -19,6 +19,7 @@ let answer;  // Declare the answer variable here
 let database = {};  // Declare the database as an object
 let guessCount = 0;  // Initialize the guess counter
 let previousGuesses = [];  // Array to store previous guesses
+let cityOptions = []; // Array to store the list of city options
 
 function parseCsvData(csvData) {
     Papa.parse(csvData, {
@@ -64,23 +65,24 @@ function updateDatabase(dataArray) {
         return;
     }
 
-    // Initial population of the datalist
-    updateDatalist('');
-    
+    cityOptions = Object.keys(database);
     answer = getRandomCity();
     console.log("New answer:", answer);
+    updateDatalist('');
 }
 
 function getRandomCity() {
-    const cityNames = Object.keys(database);
-    return cityNames[Math.floor(Math.random() * cityNames.length)];
+    return cityOptions[Math.floor(Math.random() * cityOptions.length)];
 }
 
 function updateDatalist(filter) {
     const datalist = document.getElementById('cityNames');
     datalist.innerHTML = '';  // Clear existing options
 
-    const filteredCities = Object.keys(database).filter(city => city.startsWith(filter));
+    const filteredCities = cityOptions.filter(city => city.toLowerCase().startsWith(filter.toLowerCase()));
+    if (filteredCities.length === 0) {
+        filteredCities.push(...cityOptions);
+    }
     filteredCities.forEach(city => {
         const option = document.createElement('option');
         option.value = city;
@@ -103,9 +105,9 @@ document.getElementById("userGuessForm").addEventListener("submit", function(eve
         previousGuesses.push(guessData);
         displayPreviousGuesses();
     }
-
     else {
-        alert("Not a California City! Try again")
+        alert("Not a California City! Try again");
+        updateDatalist(''); // Update the datalist options to show all options
         document.getElementById("userGuess").value = '';
     }
 
@@ -115,10 +117,11 @@ document.getElementById("userGuessForm").addEventListener("submit", function(eve
         answer = getRandomCity();  // Pick a new answer
         previousGuesses = [];  // Reset previous guesses
         displayPreviousGuesses();  // Clear the display
+        updateDatalist(''); // Update the datalist options for a new game
     } else if (guess != answer && database[guess]) { // when guess is allowed guess but is not the correct guess
         alert("Try again!");
+        updateDatalist(''); // Update the datalist options to show all options
         document.getElementById("userGuess").value = '';
-
     }
 });
 
@@ -127,8 +130,34 @@ function displayPreviousGuesses() {
     previousGuessesList.innerHTML = '';  // Clear existing list
 
     previousGuesses.forEach(guessData => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `City: ${guessData.city}, Latitude: ${guessData.latd}, Longitude: ${guessData.longd}, Population: ${guessData.population_total}, Area: ${guessData.area_total_sq_mi}`;
+        const listItem = document.createElement('div');
+        listItem.classList.add('previous-guess');
+
+        const cityElement = document.createElement('div');
+        cityElement.classList.add('guess-item');
+        cityElement.textContent = guessData.city;
+        listItem.appendChild(cityElement);
+
+        const latitudeElement = document.createElement('div');
+        latitudeElement.classList.add('guess-item');
+        latitudeElement.textContent = guessData.latd;
+        listItem.appendChild(latitudeElement);
+
+        const longitudeElement = document.createElement('div');
+        longitudeElement.classList.add('guess-item');
+        longitudeElement.textContent = guessData.longd;
+        listItem.appendChild(longitudeElement);
+
+        const populationElement = document.createElement('div');
+        populationElement.classList.add('guess-item');
+        populationElement.textContent = guessData.population_total;
+        listItem.appendChild(populationElement);
+
+        const areaElement = document.createElement('div');
+        areaElement.classList.add('guess-item');
+        areaElement.textContent = guessData.area_total_sq_mi;
+        listItem.appendChild(areaElement);
+
         previousGuessesList.appendChild(listItem);
     });
 }
