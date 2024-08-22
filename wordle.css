@@ -1,4 +1,3 @@
-/* Style for the body to use flexbox */
 body {
     display: flex;
     justify-content: center;
@@ -61,10 +60,16 @@ form input, form button {
     width: 100%;
 }
 
-#previousGuessesList li {
+.previous-guess {
+    display: flex;
+    flex-direction: column;
     background-color: #f9f9f9;
     margin: 5px 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+}
+
+.guess-item {
+    margin-bottom: 5px;
 }
