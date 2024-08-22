@@ -99,65 +99,105 @@ document.getElementById("userGuessForm").addEventListener("submit", function(eve
     event.preventDefault();
     const guess = document.getElementById("userGuess").value.trim().toLowerCase();
 
-    if (database[guess]) { // when the guess is within the database of cities (i.e. allowed guess)
+    // Check for duplicate guesses
+    if (previousGuesses.some(guessData => guessData.city.toLowerCase() === guess)) {
+        alert("You already guessed this city. Try a different one!");
+        document.getElementById("userGuess").value = '';  // Clear the input box for duplicate guesses
+        updateDatalist('');  // Display all city names in the datalist
+        return;  // Prevent duplicate guesses
+    }
+
+    // Check if the guess is within the database of cities (i.e. allowed guess)
+    if (database[guess]) {
         guessCount++;
         const guessData = database[guess];
         previousGuesses.push(guessData);
-        displayPreviousGuesses();
-    }
-    else {
+        displayPreviousGuesses(guess === answer);  // Pass true if the guess is correct
+        document.getElementById("userGuess").value = '';  // Clear the input box after valid guess
+    } else {
         alert("Not a California City! Try again");
         updateDatalist(''); // Update the datalist options to show all options
-        document.getElementById("userGuess").value = '';
+        document.getElementById("userGuess").value = '';  // Clear the input box
     }
 
+    // Check if the guess is correct
     if (guess === answer) {
         alert(`YAY! You guessed it in ${guessCount} tries.`);
+        
+        // Disable further guesses
+        document.getElementById("userGuess").disabled = true;
+        document.querySelector("button[type='submit']").disabled = true;
+
         guessCount = 0;  // Reset the counter for a new game
         answer = getRandomCity();  // Pick a new answer
-        previousGuesses = [];  // Reset previous guesses
-        displayPreviousGuesses();  // Clear the display
         updateDatalist(''); // Update the datalist options for a new game
-    } else if (guess != answer && database[guess]) { // when guess is allowed guess but is not the correct guess
+    } else if (guess != answer && database[guess]) {
         alert("Try again!");
         updateDatalist(''); // Update the datalist options to show all options
-        document.getElementById("userGuess").value = '';
+        document.getElementById("userGuess").value = '';  // Clear the input box after invalid guess
     }
 });
 
-function displayPreviousGuesses() {
+function displayPreviousGuesses(gameWon = false) {
     const previousGuessesList = document.getElementById('previousGuessesList');
-    previousGuessesList.innerHTML = '';  // Clear existing list
+    
+    // Get the most recent guess (last item in the array)
+    const guessData = previousGuesses[previousGuesses.length - 1];
+    
+    const listItem = document.createElement('div');
+    listItem.classList.add('previous-guess');
 
-    previousGuesses.forEach(guessData => {
-        const listItem = document.createElement('div');
-        listItem.classList.add('previous-guess');
+    if (gameWon && guessData.city.toLowerCase() === answer.toLowerCase()) {
+        listItem.style.backgroundColor = 'lightgreen';  // Highlight correct answer
+    }
 
-        const cityElement = document.createElement('div');
-        cityElement.classList.add('guess-item');
-        cityElement.textContent = guessData.city;
-        listItem.appendChild(cityElement);
+    const cityElement = document.createElement('div');
+    cityElement.classList.add('guess-item');
+    cityElement.textContent = "City: " + guessData.city;
+    listItem.appendChild(cityElement);
 
-        const latitudeElement = document.createElement('div');
-        latitudeElement.classList.add('guess-item');
-        latitudeElement.textContent = guessData.latd;
-        listItem.appendChild(latitudeElement);
+    const latitudeElement = document.createElement('div');
+    latitudeElement.classList.add('guess-item');
+    latitudeElement.textContent = "Latitude: " + guessData.latd;
+    listItem.appendChild(latitudeElement);
 
-        const longitudeElement = document.createElement('div');
-        longitudeElement.classList.add('guess-item');
-        longitudeElement.textContent = guessData.longd;
-        listItem.appendChild(longitudeElement);
+    const longitudeElement = document.createElement('div');
+    longitudeElement.classList.add('guess-item');
+    longitudeElement.textContent = "Longitude: " + guessData.longd;
+    listItem.appendChild(longitudeElement);
 
-        const populationElement = document.createElement('div');
-        populationElement.classList.add('guess-item');
-        populationElement.textContent = guessData.population_total;
-        listItem.appendChild(populationElement);
+    const populationElement = document.createElement('div');
+    populationElement.classList.add('guess-item');
+    let populationText = "Population: " + guessData.population_total;
 
-        const areaElement = document.createElement('div');
-        areaElement.classList.add('guess-item');
-        areaElement.textContent = guessData.area_total_sq_mi;
-        listItem.appendChild(areaElement);
+    const answerPopulation = parseInt(database[answer].population_total);
+    const guessPopulation = parseInt(guessData.population_total);
 
-        previousGuessesList.appendChild(listItem);
-    });
+    if (guessPopulation < answerPopulation) {
+        populationText += " ⬆ (Higher)";
+    } else if (guessPopulation > answerPopulation) {
+        populationText += " ⬇ (Lower)";
+    }
+
+    populationElement.textContent = populationText;
+    listItem.appendChild(populationElement);
+
+    const areaElement = document.createElement('div');
+    areaElement.classList.add('guess-item');
+    let areaText = "Square Miles: " + guessData.area_total_sq_mi;
+
+    const answerArea = parseFloat(database[answer].area_total_sq_mi);
+    const guessArea = parseFloat(guessData.area_total_sq_mi);
+
+    if (guessArea < answerArea) {
+        areaText += " ⬆ (Higher)";
+    } else if (guessArea > answerArea) {
+        areaText += " ⬇ (Lower)";
+    }
+
+    areaElement.textContent = areaText;
+    listItem.appendChild(areaElement);
+
+    // Insert the new guess at the top of the list
+    previousGuessesList.insertBefore(listItem, previousGuessesList.firstChild);
 }
