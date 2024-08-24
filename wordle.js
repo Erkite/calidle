@@ -156,17 +156,6 @@ function displayPreviousGuesses(gameWon = false) {
     cityElement.textContent = "City: " + guessData.city;
     listItem.appendChild(cityElement);
 
-    const distanceDirectionElement = document.createElement('div');
-    distanceDirectionElement.classList.add('guess-item');
-    
-    const answerLat = parseFloat(database[answer].latd);
-    const answerLong = parseFloat(database[answer].longd);
-    const guessLat = parseFloat(guessData.latd);
-    const guessLong = parseFloat(guessData.longd);
-    
-    const distance = calculateDistance(guessLat, guessLong, answerLat, answerLong);
-    const direction = calculateDirection(guessLat, guessLong, answerLat, answerLong);
-
     const populationElement = document.createElement('div');
     populationElement.classList.add('guess-item');
     let populationText = "Population: " + guessData.population_total;
@@ -199,8 +188,23 @@ function displayPreviousGuesses(gameWon = false) {
     areaElement.textContent = areaText;
     listItem.appendChild(areaElement);
 
-    distanceDirectionElement.textContent = `You should head: ${distance.toFixed(2)} Miles ${direction}`;
-    listItem.appendChild(distanceDirectionElement);
+    // Only show distance and direction if the game hasn't been won yet
+    if (!gameWon || guessData.city.toLowerCase() !== answer.toLowerCase()) {
+        const distanceDirectionElement = document.createElement('div');
+        distanceDirectionElement.classList.add('guess-item');
+    
+        const answerLat = parseFloat(database[answer].latd);
+        const answerLong = parseFloat(database[answer].longd);
+        const guessLat = parseFloat(guessData.latd);
+        const guessLong = parseFloat(guessData.longd);
+        
+        const distance = calculateDistance(guessLat, guessLong, answerLat, answerLong);
+        const direction = calculateDirection(guessLat, guessLong, answerLat, answerLong);
+
+        distanceDirectionElement.textContent = `You should head: ${distance.toFixed(2)} Miles ${direction}`;
+        listItem.appendChild(distanceDirectionElement);
+    }
+
     // Insert the new guess at the top of the list
     previousGuessesList.insertBefore(listItem, previousGuessesList.firstChild);
 }
