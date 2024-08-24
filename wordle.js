@@ -156,15 +156,16 @@ function displayPreviousGuesses(gameWon = false) {
     cityElement.textContent = "City: " + guessData.city;
     listItem.appendChild(cityElement);
 
-    const latitudeElement = document.createElement('div');
-    latitudeElement.classList.add('guess-item');
-    latitudeElement.textContent = "Latitude: " + guessData.latd;
-    listItem.appendChild(latitudeElement);
-
-    const longitudeElement = document.createElement('div');
-    longitudeElement.classList.add('guess-item');
-    longitudeElement.textContent = "Longitude: " + guessData.longd;
-    listItem.appendChild(longitudeElement);
+    const distanceDirectionElement = document.createElement('div');
+    distanceDirectionElement.classList.add('guess-item');
+    
+    const answerLat = parseFloat(database[answer].latd);
+    const answerLong = parseFloat(database[answer].longd);
+    const guessLat = parseFloat(guessData.latd);
+    const guessLong = parseFloat(guessData.longd);
+    
+    const distance = calculateDistance(guessLat, guessLong, answerLat, answerLong);
+    const direction = calculateDirection(guessLat, guessLong, answerLat, answerLong);
 
     const populationElement = document.createElement('div');
     populationElement.classList.add('guess-item');
@@ -198,6 +199,55 @@ function displayPreviousGuesses(gameWon = false) {
     areaElement.textContent = areaText;
     listItem.appendChild(areaElement);
 
+    distanceDirectionElement.textContent = `You should head: ${distance.toFixed(2)} Miles ${direction}`;
+    listItem.appendChild(distanceDirectionElement);
     // Insert the new guess at the top of the list
     previousGuessesList.insertBefore(listItem, previousGuessesList.firstChild);
+}
+
+function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3958.8; // Radius of the Earth in miles
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;  // Returns the calculated distance in miles
+}
+function calculateDirection(lat1, lon1, lat2, lon2) {
+    const dLon = toRadians(lon2 - lon1);
+    const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
+    const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
+              Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
+    let brng = Math.atan2(y, x);
+    brng = toDegrees(brng);
+    brng = (brng + 360) % 360;
+    
+    if (brng >= 337.5 || brng < 22.5) {
+        return "North ↑";
+    } else if (brng >= 22.5 && brng < 67.5) {
+        return "Northeast ↗";
+    } else if (brng >= 67.5 && brng < 112.5) {
+        return "East →";
+    } else if (brng >= 112.5 && brng < 157.5) {
+        return "Southeast ↘";
+    } else if (brng >= 157.5 && brng < 202.5) {
+        return "South ↓";
+    } else if (brng >= 202.5 && brng < 247.5) {
+        return "Southwest ↙";
+    } else if (brng >= 247.5 && brng < 292.5) {
+        return "West ←";
+    } else if (brng >= 292.5 && brng < 337.5) {
+        return "Northwest ↖";
+    }
+    return "Unknown direction";
+}
+
+function toDegrees(radians) {
+    return radians * (180 / Math.PI);
 }
